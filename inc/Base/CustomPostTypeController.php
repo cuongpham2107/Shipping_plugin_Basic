@@ -7,13 +7,18 @@ namespace Inc\Base;
 use Inc\Api\SettingsApi;
 use Inc\Base\BaseController;
 use Inc\Api\Callbacks\AdminCallbacks;
+use Inc\Api\Callbacks\ProductCallback;
 
 /**
 * 
 */
 class CustomPostTypeController extends BaseController
 {
+	public $settings;
+
 	public $callbacks;
+
+	public $product_callback;
 
 	public $subpages = array();
 
@@ -27,8 +32,16 @@ class CustomPostTypeController extends BaseController
 
 		$this->callbacks = new AdminCallbacks();
 
+		$this->product_callback = new ProductCallback();
+
 		$this->setSubpages();
 
+		$this->setSettings();
+
+		$this->setSections();
+
+		$this->setFields();
+		
 		$this->settings->addSubPages( $this->subpages )->register();
 
 		$this->storeCustomPostTypes();
@@ -43,50 +56,150 @@ class CustomPostTypeController extends BaseController
 		$this->subpages = array(
 			array(
 				'parent_slug' => 'shipping_plugin', 
-				'page_title' => 'Custom Post Types', 
-				'menu_title' => 'CPT Manager', 
+				'page_title' => 'Products', 
+				'menu_title' => 'Product Manager', 
 				'capability' => 'manage_options', 
 				'menu_slug' => 'shipping_cpt', 
-				'callback' => array( $this->callbacks, 'adminCpt' )
+				'callback' => array( $this->callbacks, 'adminProducts' )
 			)
 		);
 	}
+	public function setSettings()
+	{
+		$data = array(
+			array(
+				'option_group'		=>	'shipping_plugin_product_settings',
+				'option_name'		=>	'product_setting',
+				'callback'			=>	array($this->product_callback,'productSanitize')
+			)
+		);
+		$this->settings->setSettings($data);
+	}
+	public function setSections()
+	{
+		$data = array(
+			array(
+				'id'		=>	'shipping_plugin_product_index',
+				'title'		=>	'Custom Post Type Manager',
+				'callback'	=>	array($this->product_callback, 'productSectionManager'),
+				'page'		=>	'shipping_product'
+			)
+		);
+		$this->settings->setSections($data);
+	}
+	public function setFields()
+	{
 
+
+		//post type id
+		//singular name
+		//plural name
+		//public
+		//has_archive
+		$data = array(
+			array(
+				'id'		=>	'post_type',
+				'title'		=>	'Custom Post Type ID',
+				'callback'	=>	array($this->product_callback, 'textField'),
+				'page'		=>	'shipping_product',
+				'section'	=>	'shipping_plugin_product_index',
+				'args'		=>	array(
+					'option_name'	=>'product_setting',
+					'label_for'	=> 'post_type',
+					'placeholder'=>	'eg. product'
+					
+				)
+			),
+			array(
+				'id'		=>	'singular_name',
+				'title'		=>	'Singular Name',
+				'callback'	=>	array($this->product_callback, 'textField'),
+				'page'		=>	'shipping_product',
+				'section'	=>	'shipping_plugin_product_index',
+				'args'		=>	array(
+					'option_name'	=>'product_setting',
+					'label_for'	=> 'singular_name',
+					'placeholder'=>	'eg. Product'
+				)
+			),
+			array(
+				'id'		=>	'plural_name',
+				'title'		=>	'Plural Name',
+				'callback'	=>	array($this->product_callback, 'textField'),
+				'page'		=>	'shipping_product',
+				'section'	=>	'shipping_plugin_product_index',
+				'args'		=>	array(
+					'option_name'	=>'product_setting',
+					'label_for'	=> 'plural_name',
+					'placeholder'=>	'eg. product'
+					
+				)
+			),
+			array(
+				'id'		=>	'public',
+				'title'		=>	'Is this Public',
+				'callback'	=>	array($this->product_callback, 'checkboxField'),
+				'page'		=>	'shipping_product',
+				'section'	=>	'shipping_plugin_product_index',
+				'args'		=>	array(
+					'option_name'	=>'product_setting',
+					'label_for'	=> 'public',
+					'class'		=>'ui-toggle',
+					
+				)
+			),
+			array(
+				'id'		=>	'has_archive',
+				'title'		=>	'Archive',
+				'callback'	=>	array($this->product_callback, 'checkboxField'),
+				'page'		=>	'shipping_product',
+				'section'	=>	'shipping_plugin_product_index',
+				'args'		=>	array(
+					'option_name'	=>'product_setting',
+					'label_for'	=> 'has_archive',
+					'class'		=>'ui-toggle',
+					
+				)
+			),
+		);
+		$this->settings->setFields($data);
+	}
 	public function storeCustomPostTypes()
 	{
 		$this->custom_post_types[] = array(
-			'post_type'             => 'test',
-			'name'                  => '',
-			'singular_name'         => '',
-			'menu_name'             => '',
-			'name_admin_bar'        => '',
+			'post_type'             => 'product',
+			'name'                  => _x( 'Products', 'Post type general name', 'shipping-plugin' ),
+			'singular_name'         => _x( 'Product', 'Post type singular name', 'shipping-plugin' ),
+			'menu_name'             => _x( 'Products', 'Admin Menu text', 'shipping-plugin' ),
+			'name_admin_bar'        => _x( 'Product', 'Add New on Toolbar', 'shipping-plugin' ),
 			'archives'              => '',
 			'attributes'            => '',
-			'parent_item_colon'     => '',
-			'all_items'             => '',
-			'add_new_item'          => '',
-			'add_new'               => '',
-			'new_item'              => '',
-			'edit_item'             => '',
-			'update_item'           => '',
-			'view_item'             => '',
+			'parent_item_colon'     => __( 'Parent Products:', 'shipping-plugin' ),
+			'all_items'             => __( 'All Products', 'shipping-plugin' ),
+			'add_new_item'          => __( 'Add New Product', 'shipping-plugin' ),
+			'add_new'               => __( 'Add New' ,'shipping-plugin'),
+			'new_item'              => __( 'New Product', 'shipping-plugin' ),
+			'edit_item'             => __( 'Edit Product', 'shipping-plugin' ),
+			'update_item'           => __( 'Update Product', 'shipping-plugin' ),
+			'view_item'             => __( 'View Product', 'shipping-plugin' ),
 			'view_items'            => '',
-			'search_items'          => '',
-			'not_found'             => '',
-			'not_found_in_trash'    => '',
-			'featured_image'        => '',
-			'set_featured_image'    => '',
-			'remove_featured_image' => '',
-			'use_featured_image'    => '',
-			'insert_into_item'      => '',
-			'uploaded_to_this_item' => '',
-			'items_list'            => '',
-			'items_list_navigation' => '',
-			'filter_items_list'     => '',
+			'search_items'          => __( 'Search Products', 'shipping-plugin' ),
+			'not_found'             => __( 'No products found.', 'shipping-plugin' ),
+			'not_found_in_trash'    => __( 'No products found in Trash.', 'shipping-plugin' ),
+			'featured_image'        => _x( 'Product Cover Image', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+			'set_featured_image'    => _x( 'Set cover image', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+			'remove_featured_image' => _x( 'Remove cover image', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+			'use_featured_image'    => _x( 'Use as cover image', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+			'insert_into_item'      => _x( 'Insert into book', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'shipping-plugin' ),
+			'uploaded_to_this_item' => _x( 'Uploaded to this book', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'shipping-plugin' ),
+			'items_list'            => _x( 'Products list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'textdomain' ),
+			'items_list_navigation' => _x( 'Products list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'textdomain' ),
+			'filter_items_list'     => _x( 'Filter products list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'textdomain' ),
 			'label'                 => '',
-			'description'           => '',
-			'supports'              => false,
-			'taxonomies'            => array(),
+			'description'           => 'Products custom post type.',
+			'rewrite'            	=> array( 'slug' => 'products' ),
+			'supports'              => array( 'title', 'editor', 'author', 'thumbnail' ),
+			'taxonomies'            => array( 'category', 'post_tag' ),
 			'hierarchical'          => false,
 			'public'                => true,
 			'show_ui'               => true,

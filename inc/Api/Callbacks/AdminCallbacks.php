@@ -18,9 +18,9 @@ class AdminCallbacks extends BaseController
 	/**
 	 * Trả về view
 	 */
-	public function adminCpt()
+	public function adminProducts()
 	{
-		return require_once( "$this->plugin_path/templates/cpt.php" );
+		return require_once( "$this->plugin_path/templates/products.php" );
 	}
 	/**
 	 * Trả về view
