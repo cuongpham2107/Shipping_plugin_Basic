@@ -8,10 +8,6 @@ use Inc\Base\BaseController;
 
 class AdminCallbacks extends BaseController
 {
-	public function loginSanitize($input)
-	{
-		return $input;
-	}
 	/**
 	 * Trả về view
 	 */
@@ -85,8 +81,5 @@ class AdminCallbacks extends BaseController
 	/**
 	 * Trả về view
 	 */
-	public function adminCustomLogin()
-	{
-		return require_once( "$this->plugin_path/templates/custom_login.php" );
-	}
+	
 }

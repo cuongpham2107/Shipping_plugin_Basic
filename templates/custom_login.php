@@ -8,7 +8,7 @@
 			<form method="post" action="options.php">
 				<?php 
 					settings_fields( 'custom_login_settings' );
-					do_settings_sections( 'custom_login' );
+					do_settings_sections( 'custom_login_page' );
 					submit_button();
 				?>
 			</form>

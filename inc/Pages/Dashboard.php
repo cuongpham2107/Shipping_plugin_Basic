@@ -38,9 +38,8 @@ class Dashboard extends BaseController
 		$this->settings->addPages( $this->pages )->withSubPage( 'Dashboard' )->register();
 
 		add_action( 'login_enqueue_scripts', array($this,'my_login_logo') );
-		
-	}
 
+	}
 	
 	/**
 	 * Tạo Top Menu

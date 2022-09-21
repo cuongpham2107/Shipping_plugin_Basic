@@ -30,8 +30,6 @@ class CustomPostTypeController extends BaseController
 
 		$this->settings = new SettingsApi();
 
-		$this->callbacks = new AdminCallbacks();
-
 		$this->product_callback = new ProductCallback();
 
 		$this->setSubpages();

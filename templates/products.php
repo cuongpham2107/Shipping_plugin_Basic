@@ -16,6 +16,14 @@
     <div class="tab-content ">
         <div id="tab-1" class="tab-pane active !px-8 !py-2">
             <h3>Manage Your Custom Post Types</h3>
+
+            <?php 
+                $options = get_option('product_setting');
+
+                foreach ($options as $key => $value) {
+                    echo $value['singular_name'].'<br>';
+                }
+            ?>
         </div>
         <div id="tab-2" class="tab-pane !px-8 !py-2">
             <h3 class="text-3xl text-center my-4">Create a new Custom Post Type</h3>
