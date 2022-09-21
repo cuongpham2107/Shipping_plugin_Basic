@@ -122,7 +122,11 @@ class SettingsApi
 	{
 		// đăng kí setting
 		foreach ( $this->settings as $setting ) {
-			register_setting( $setting["option_group"], $setting["option_name"], ( isset( $setting["callback"] ) ? $setting["callback"] : '' ) );
+			register_setting( 
+				$setting["option_group"], 
+				$setting["option_name"], 
+				( isset( $setting["callback"] ) ? $setting["callback"] : '' ) 
+			);
 		}
 
 		// đăng kí section
@@ -132,7 +136,14 @@ class SettingsApi
 
 		// đăng kí settings field
 		foreach ( $this->fields as $field ) {
-			add_settings_field( $field["id"], $field["title"], ( isset( $field["callback"] ) ? $field["callback"] : '' ), $field["page"], $field["section"], ( isset( $field["args"] ) ? $field["args"] : '' ) );
+			add_settings_field( 
+				$field["id"], 
+				$field["title"], 
+				( isset( $field["callback"] ) ? $field["callback"] : '' ), 
+				$field["page"], 
+				$field["section"], 
+				( isset( $field["args"] ) ? $field["args"] : '' ) 
+			);
 		}
 	}
 }

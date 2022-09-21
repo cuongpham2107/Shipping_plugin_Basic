@@ -8,6 +8,10 @@ use Inc\Base\BaseController;
 
 class AdminCallbacks extends BaseController
 {
+	public function loginSanitize($input)
+	{
+		return $input;
+	}
 	/**
 	 * Trả về view
 	 */

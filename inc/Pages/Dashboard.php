@@ -49,8 +49,8 @@ class Dashboard extends BaseController
 	{
 		$this->pages = array(
 			array(
-				'page_title' => 'Shipping Plugin', 
-				'menu_title' => 'Shipping Plugin', 
+				'page_title' => 'Plugin', 
+				'menu_title' => 'Plugin', 
 				'capability' => 'manage_options', 
 				'menu_slug' => 'shipping_plugin', 
 				'callback' => array( $this->callbacks, 'adminDashboard' ), 

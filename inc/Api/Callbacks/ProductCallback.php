@@ -15,17 +15,30 @@
     }
     public function productSanitize($input)
     {
-        return $input;
+        $output = get_option('product_setting');
+        // $new_input = array($input['post_type'] => $input);
+
+        foreach ($output as $key => $value) 
+        {
+            if($input['post_type'] === $key)
+            {
+                $output[$key] = $input;
+            }
+            else
+            {
+                $output[$input['post_type']] = $input;
+            }
+        }
+       
+        return $output;
     }
     public function textField($data)
     {
         $name = $data['label_for'];
         $option_name = $data['option_name'];
         $input = get_option($option_name);
-        var_dump($input);
-        $value = $input["'.$name.'"];
         
-        echo'<input type="text" class="regular-text" id="'.$name.'" name="'.$option_name.'['.$name.']" value="'.$value.'" placeholder="'.$data['placeholder'].'">';
+        echo'<input type="text" class="regular-text" id="'.$name.'" name="'.$option_name.'['.$name.']" value="" placeholder="'.$data['placeholder'].'">';
     }
     /**
 	 * Trả về Label và ô input
@@ -36,10 +49,10 @@
 		$classes = $args['class'];
 		$option_name = $args['option_name'];
 		$checkbox = get_option( $option_name );
-		$checked = isset($checkbox[$name]) ? ($checkbox[$name] ? true : false) : false;
+		
 
 		echo '<div class="' . $classes . '">
-				<input type="checkbox" id="' . $name . '" name="' . $option_name . '[' . $name . ']" value="1" class="" ' . ( $checked ? 'checked' : '') . '>
+				<input type="checkbox" id="' . $name . '" name="' . $option_name . '[' . $name . ']" value="1" class="">
 				<label for="' . $name . '"><div></div></label>
 			</div>';
 	}

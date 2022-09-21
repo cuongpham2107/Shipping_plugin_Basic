@@ -18,9 +18,11 @@ class Enqueue extends BaseController
 	function enqueue() {
 		// enqueue all our scripts
 		wp_enqueue_style( 'mypluginstyle', $this->plugin_url . 'assets/mystyle.css' );
+		wp_enqueue_style( 'tailwindcss', $this->plugin_url . 'assets/output.css' );
 		wp_enqueue_script( 'mypluginscript', $this->plugin_url . 'assets/myscript.js' );
 
 		wp_enqueue_script( 'my_style', $this->plugin_url . 'assets/style.js' );
+		
 		echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>';
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('thickbox');

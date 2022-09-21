@@ -63,6 +63,7 @@ class CustomLoginController extends BaseController
             array(
                 'option_group'  => 'custom_login_settings',
                 'option_name'   => 'custom_login_setting',
+                'callback'		=>	array($this->callbacks,'loginSanitize')
             )
            
         );

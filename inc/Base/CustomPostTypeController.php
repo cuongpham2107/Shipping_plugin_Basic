@@ -66,14 +66,14 @@ class CustomPostTypeController extends BaseController
 	}
 	public function setSettings()
 	{
-		$data = array(
+		$settings = array(
 			array(
 				'option_group'		=>	'shipping_plugin_product_settings',
 				'option_name'		=>	'product_setting',
 				'callback'			=>	array($this->product_callback,'productSanitize')
 			)
 		);
-		$this->settings->setSettings($data);
+		$this->settings->setSettings($settings);
 	}
 	public function setSections()
 	{
@@ -89,8 +89,6 @@ class CustomPostTypeController extends BaseController
 	}
 	public function setFields()
 	{
-
-
 		//post type id
 		//singular name
 		//plural name
@@ -165,54 +163,62 @@ class CustomPostTypeController extends BaseController
 		$this->settings->setFields($data);
 	}
 	public function storeCustomPostTypes()
-	{
-		$this->custom_post_types[] = array(
-			'post_type'             => 'product',
-			'name'                  => _x( 'Products', 'Post type general name', 'shipping-plugin' ),
-			'singular_name'         => _x( 'Product', 'Post type singular name', 'shipping-plugin' ),
-			'menu_name'             => _x( 'Products', 'Admin Menu text', 'shipping-plugin' ),
-			'name_admin_bar'        => _x( 'Product', 'Add New on Toolbar', 'shipping-plugin' ),
-			'archives'              => '',
-			'attributes'            => '',
-			'parent_item_colon'     => __( 'Parent Products:', 'shipping-plugin' ),
-			'all_items'             => __( 'All Products', 'shipping-plugin' ),
-			'add_new_item'          => __( 'Add New Product', 'shipping-plugin' ),
-			'add_new'               => __( 'Add New' ,'shipping-plugin'),
-			'new_item'              => __( 'New Product', 'shipping-plugin' ),
-			'edit_item'             => __( 'Edit Product', 'shipping-plugin' ),
-			'update_item'           => __( 'Update Product', 'shipping-plugin' ),
-			'view_item'             => __( 'View Product', 'shipping-plugin' ),
-			'view_items'            => '',
-			'search_items'          => __( 'Search Products', 'shipping-plugin' ),
-			'not_found'             => __( 'No products found.', 'shipping-plugin' ),
-			'not_found_in_trash'    => __( 'No products found in Trash.', 'shipping-plugin' ),
-			'featured_image'        => _x( 'Product Cover Image', 'Overrides the “Featured Image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
-			'set_featured_image'    => _x( 'Set cover image', 'Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
-			'remove_featured_image' => _x( 'Remove cover image', 'Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
-			'use_featured_image'    => _x( 'Use as cover image', 'Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
-			'insert_into_item'      => _x( 'Insert into book', 'Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'shipping-plugin' ),
-			'uploaded_to_this_item' => _x( 'Uploaded to this book', 'Overrides the “Uploaded to this post”/”Uploaded to this page” phrase (used when viewing media attached to a post). Added in 4.4', 'shipping-plugin' ),
-			'items_list'            => _x( 'Products list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'textdomain' ),
-			'items_list_navigation' => _x( 'Products list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'textdomain' ),
-			'filter_items_list'     => _x( 'Filter products list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'textdomain' ),
-			'label'                 => '',
-			'description'           => 'Products custom post type.',
-			'rewrite'            	=> array( 'slug' => 'products' ),
-			'supports'              => array( 'title', 'editor', 'author', 'thumbnail' ),
-			'taxonomies'            => array( 'category', 'post_tag' ),
-			'hierarchical'          => false,
-			'public'                => true,
-			'show_ui'               => true,
-			'show_in_menu'          => true,
-			'menu_position'         => 5,
-			'show_in_admin_bar'     => true,
-			'show_in_nav_menus'     => true,
-			'can_export'            => true,
-			'has_archive'           => true,
-			'exclude_from_search'   => false,
-			'publicly_queryable'    => true,
-			'capability_type'       => 'page'
-		);
+	{	
+		$options = get_option('product_setting');
+		if(isset($options))
+		{
+			foreach ($options as $key => $option) 
+			{
+				$this->custom_post_types[] = array(
+					'post_type'             => $option['post_type'],
+					'name'                  => $option['plural_name'],
+					'singular_name'         => $option['singular_name'],
+					'menu_name'             => $option['plural_name'],
+					'name_admin_bar'        => $option['singular_name'],
+					'archives'              => $option['singular_name'] . ' Archives',
+					'attributes'            => $option['singular_name']	. ' Attributes',
+					'parent_item_colon'     => 'Parent '	. $option['singular_name'],
+					'all_items'             => 'All '	. $option['plural_name'],
+					'add_new_item'          => 'Add New '. $option['singular_name'],
+					'add_new'               => __( 'Add New ' ,'shipping-plugin'),
+					'new_item'              => 'New '	. $option['singular_name'],
+					'edit_item'             => 'Edit '	. $option['singular_name'],
+					'update_item'           => 'Update '	. $option['singular_name'],
+					'view_item'             => 'View '	. $option['singular_name'],
+					'view_items'            => '',
+					'search_items'          => 'Search '	. $option['singular_name'],
+					'not_found'             => 'No '. $option['singular_name'] .'found.',
+					'not_found_in_trash'    => 'No '. $option['singular_name']. 'found in Trash.',
+					'featured_image'        => $option['singular_name'] . ' Cover Image',
+					'set_featured_image'    => _x( 'Set cover image ', ' Overrides the “Set featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+					'remove_featured_image' => _x( 'Remove cover image ', ' Overrides the “Remove featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+					'use_featured_image'    => _x( 'Use as cover image ', ' Overrides the “Use as featured image” phrase for this post type. Added in 4.3', 'shipping-plugin' ),
+					'insert_into_item'      => _x( 'Insert into book ', ' Overrides the “Insert into post”/”Insert into page” phrase (used when inserting media into a post). Added in 4.4', 'shipping-plugin' ),
+					'uploaded_to_this_item' => 'Uploaded to this'. $option['singular_name'],
+					'items_list'            => $option['singular_name'] . ' list', 
+					'items_list_navigation' => $option['singular_name'].' list navigation',
+					'filter_items_list'     => 'Filter'.$option['singular_name'].' products list',
+					'label'                 => $option['singular_name'],
+					'description'           => $option['singular_name'] . ' custom post type.',
+					'rewrite'            	=> array( 'slug' => 'products' ),
+					'supports'              => array( 'title', 'editor', 'author', 'thumbnail' ),
+					'taxonomies'            => array( 'category', 'post_tag' ),
+					'hierarchical'          => false,
+					'public'                => true,
+					'show_ui'               => true,
+					'show_in_menu'          => true,
+					'menu_position'         => 5,
+					'show_in_admin_bar'     => true,
+					'show_in_nav_menus'     => true,
+					'can_export'            => true,
+					'has_archive'           => true,
+					'exclude_from_search'   => false,
+					'publicly_queryable'    => true,
+					'capability_type'       => 'post'
+				);
+			}
+		}
+		
 	}
 
 	public function registerCustomPostTypes()
